@@ -7,4 +7,4 @@ handlers:
   - url: /.*
     script: auto
 
-instance_class: F2
+instance_class: F4_1G
