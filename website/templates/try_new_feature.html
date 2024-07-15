@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - FashionAi Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .new-feature-card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background-color: #f0f8ff;
+            padding: 3rem;
+        }
+
+        .new-feature-card i {
+            font-size: 3rem;
+            color: #007bff;
+        }
+
+        /* Hero Section Styles */
+        .hero-image {
+            background-image: url("{{ url_for('static', filename='background1.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 13rem 0; /* Increase padding for a larger vertical section */
+            text-align: center;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Navbar styles */
+        .navbar-custom {
+            background-color: #6b6b6b; /* Dark gray background */
+        }
+
+        .navbar-custom .nav-link, .navbar-custom .navbar-brand {
+            color: #2c2c2c; /* Consistent dark gray text color for links and brand */
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: #1a1a1a; /* Slightly darker gray on hover */
+        }
+
+        .img-thumbnail {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom border-bottom border-dark">
+        <a class="navbar-brand" href="/">FashionAI Shop</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/about">About Us</a></li>
+                <li class="nav-item"><a class="nav-link" href="/shop">Shop</a></li>
+                <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Background Image -->
+    <header class="hero-image">
+        <div class="container border-bottom border-dark">
+            <h1 class="display-4">Welcome to FashionAI Shop</h1>
+            <p class="lead">Your style, our passion. Discover the latest trends in fashion.</p>
+            <a href="/shop" class="btn btn-primary btn-lg btn-info">Shop Now</a>
+        </div>
+    </header>
+
+        <!-- New Section for Image Upload -->
+    <section class="container my-5">
+        <h2 class="text-center mb-4">Find Your Fashion Match</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <div class="new-feature-card">
+                    <i class="fas fa-camera mb-3"></i>
+                    <h2>Upload Your Image</h2>
+                    <p class="lead">Find similar items in our collection</p>
+                    <input type="file" id="imageUpload" accept="image/*" class="form-control mb-3">
+                    <button class="btn btn-primary btn-lg" onclick="uploadImage()">Upload</button>
+                    <div id="result"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Features Section -->
+    <section class="container my-5">
+        <h2 class="text-center mb-4">Why Shop With Us?</h2>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <h3>High Quality</h3>
+                <p>Our clothing is crafted with precision and care, using only the finest materials.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <h3>Affordable Prices</h3>
+                <p>Trendy and stylish fashion that doesn't break the bank.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <h3>Fast Shipping</h3>
+                <p>Get your order delivered quickly and reliably, no matter where you are.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-light text-center py-3">
+        <p>© 2024 FashionAi Shop. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Custom JS for Image Upload -->
+    <script>
+        function uploadImage() {
+            const input = document.getElementById('imageUpload');
+            const file = input.files[0];
+            const formData = new FormData();
+            formData.append('image', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    displayResults(data);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function displayResults(items) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '';
+
+            items.forEach(item => {
+                const img = document.createElement('img');
+                img.src = `/static/images/${item}`;
+                img.classList.add('img-thumbnail', 'm-2');
+                resultDiv.appendChild(img);
+            });
+        }
+    </script>
+</body>
+</html>
