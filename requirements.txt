@@ -6,3 +6,5 @@ tensorflow~=2.16.1
 werkzeug~=3.0.3
 keras~=3.3.3
 pillow~=10.3.0
+google-cloud-storage==1.42.3
+joblib==1.1.0
