@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, url_for, jsonify
+from flask import Flask, redirect, request, jsonify
 from google.cloud import storage
 import os
 import tensorflow as tf
@@ -12,23 +12,29 @@ def create_app():
     bucket_name = 'your-bucket-name'
     bucket = storage_client.bucket(bucket_name)
 
-    @app.before_first_request
+    models_loaded = False
+
+    @app.before_request
     def load_models():
-        # Model files to download
-        model_files = [
-            ('features_data.h5', '/tmp/features_data.h5'),
-            ('resnet2_model.h5', '/tmp/resnet2_model.h5')
-        ]
+        nonlocal models_loaded
+        if not models_loaded:
+            # Model files to download
+            model_files = [
+                ('features_data.h5', '/tmp/features_data.h5'),
+                ('resnet2_model.h5', '/tmp/res_model.h5')
+            ]
 
-        for source_blob_name, destination_file_name in model_files:
-            if not os.path.exists(destination_file_name):
-                blob = bucket.blob(source_blob_name)
-                blob.download_to_filename(destination_file_name)
+            for source_blob_name, destination_file_name in model_files:
+                if not os.path.exists(destination_file_name):
+                    blob = bucket.blob(source_blob_name)
+                    blob.download_to_filename(destination_file_name)
 
-        # Load models
-        global features_data, inception_model, res_model
-        features_data = tf.keras.models.load_model('/tmp/features_data.h5')
-        res_model = tf.keras.models.load_model('/tmp/resnet2_model.h5')
+            # Load models
+            global features_data, inception_model, res_model
+            features_data = tf.keras.models.load_model('/tmp/features_data.h5')
+            resnet2_model = tf.keras.models.load_model('/tmp/resnet2_model.h5')
+
+            models_loaded = True
 
     @app.route('/static/<path:filename>')
     def static_files(filename):
