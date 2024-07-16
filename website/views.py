@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, render_template, request, jsonify, send_from_directory
+from flask import Blueprint, render_template, request, jsonify, send_from_directory, redirect
 from PIL import Image
 import numpy as np
 import tensorflow as tf
@@ -6,13 +6,31 @@ from tensorflow.keras.models import Model, load_model
 from sklearn.metrics.pairwise import cosine_similarity
 import h5py
 import os
-
-app = Flask(__name__)
+from google.cloud import storage
 
 views = Blueprint('views', __name__)
 
+# Initialize Google Cloud Storage client
+storage_client = storage.Client()
+bucket_name = 'your-bucket-name'
+bucket = storage_client.bucket(bucket_name)
+
+# Helper function to download files from GCS
+def download_blob(bucket_name, source_blob_name, destination_file_name):
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(source_blob_name)
+    blob.download_to_filename(destination_file_name)
+
+# Download model and features files from GCS
+model_path = '/tmp/resnet2_model.h5'
+features_path = '/tmp/features_data.h5'
+
+print("Downloading model and features files...")
+download_blob(bucket_name, 'resnet2_model.h5', model_path)
+download_blob(bucket_name, 'features_data.h5', features_path)
+print("Model and features files downloaded.")
+
 # Load the HDF5 model
-model_path = 'C:\\PF\\Projeto_final\\web\\resnet2_model.h5'
 print("Loading model...")
 loaded_model = load_model(model_path)
 print("Model loaded.")
@@ -26,23 +44,17 @@ def load_features_and_labels(hdf5_file):
     with h5py.File(hdf5_file, 'r') as f:
         features = np.array(f['features'])
         filenames = [name.decode('utf-8') for name in np.array(f['filenames'])]
-        labels = [label.decode('utf-8') for label in np.array(f['labels'])]  # assuming labels need decoding as well
+        labels = [label.decode('utf-8') for name in np.array(f['labels'])]  # assuming labels need decoding as well
     return features, filenames, labels
 
-features, filenames, labels = load_features_and_labels('C:\\PF\\Projeto_final\\web\\Features\\features_data.h5')
+features, filenames, labels = load_features_and_labels(features_path)
 print("Features and filenames loaded.")
 
 # Ensure the upload directory exists
-upload_dir = os.path.join('website', 'static', 'uploads')
+upload_dir = '/tmp/uploads'
 if not os.path.exists(upload_dir):
     os.makedirs(upload_dir)
     print("Upload directory created.")
-
-# Serve the dataset images
-@app.route('/dataset/<path:filename>')
-def serve_dataset_images(filename):
-    dataset_dir = 'C:\\PF\\Projeto_final\\Dataset'
-    return send_from_directory(dataset_dir, filename)
 
 @views.route('/')
 def home():
@@ -99,7 +111,7 @@ def find_similar_images(uploaded_image_path, features, filenames, labels, top_n=
     predicted_category = labels[similar_indices[0]]
 
     # Replace the dataset path with the static path
-    static_base_path = '/static/images'
+    static_base_path = 'https://storage.googleapis.com/your-bucket-name/static/images'
     top_similar_images_static = []
 
     for image in top_similar_images:
@@ -120,16 +132,6 @@ def find_similar_images(uploaded_image_path, features, filenames, labels, top_n=
 
     return predicted_category, top_similar_images_static
 
-
-
-
-
 @views.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(upload_dir, filename)
-
-
-app.register_blueprint(views)
-
-if __name__ == "__main__":
-    app.run(debug=True)
