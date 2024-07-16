@@ -1,8 +1,18 @@
 runtime: python39
+env: standard
+instance_class: F1
 
 handlers:
-- url: /static
-  static_dir: website/static
+  - url: /static
+    static_dir: website/static
 
-- url: /.*
-  script: auto
+  - url: /.*
+    script: auto
+
+automatic_scaling:
+  min_idle_instances: automatic
+  max_idle_instances: automatic
+  min_pending_latency: automatic
+  max_pending_latency: automatic
+
+service_account: poetic-orb-429522-s8@appspot.gserviceaccount.com
