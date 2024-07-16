@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify, send_from_directory, redirect
+from flask import Blueprint, render_template, request, jsonify, send_from_directory
 from PIL import Image
 import numpy as np
 import tensorflow as tf
@@ -12,7 +12,7 @@ views = Blueprint('views', __name__)
 
 # Initialize Google Cloud Storage client
 storage_client = storage.Client()
-bucket_name = 'your-bucket-name'
+bucket_name = 'webproject12'
 bucket = storage_client.bucket(bucket_name)
 
 # Helper function to download files from GCS
@@ -44,7 +44,7 @@ def load_features_and_labels(hdf5_file):
     with h5py.File(hdf5_file, 'r') as f:
         features = np.array(f['features'])
         filenames = [name.decode('utf-8') for name in np.array(f['filenames'])]
-        labels = [label.decode('utf-8') for name in np.array(f['labels'])]  # assuming labels need decoding as well
+        labels = [label.decode('utf-8') for label in np.array(f['labels'])]  # assuming labels need decoding as well
     return features, filenames, labels
 
 features, filenames, labels = load_features_and_labels(features_path)
@@ -111,7 +111,7 @@ def find_similar_images(uploaded_image_path, features, filenames, labels, top_n=
     predicted_category = labels[similar_indices[0]]
 
     # Replace the dataset path with the static path
-    static_base_path = 'https://storage.googleapis.com/your-bucket-name/static/images'
+    static_base_path = 'https://storage.googleapis.com/webproject12/static/images'
     top_similar_images_static = []
 
     for image in top_similar_images:
