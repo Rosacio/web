@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify, send_from_directory
+from flask import Blueprint, render_template, request, jsonify, send_from_directory, redirect
 from PIL import Image
 import numpy as np
 import tensorflow as tf
@@ -19,36 +19,60 @@ bucket = storage_client.bucket(bucket_name)
 def download_blob(bucket_name, source_blob_name, destination_file_name):
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(source_blob_name)
+    print(f"Downloading {source_blob_name} to {destination_file_name}...")
     blob.download_to_filename(destination_file_name)
+    print(f"Downloaded {source_blob_name} to {destination_file_name}.")
+    # Verify file size after download
+    if os.path.exists(destination_file_name):
+        print(f"File size of {destination_file_name}: {os.path.getsize(destination_file_name)} bytes")
 
 # Download model and features files from GCS
 model_path = '/tmp/resnet2_model.h5'
 features_path = '/tmp/features_data.h5'
 
-print("Downloading model and features files...")
-download_blob(bucket_name, 'resnet2_model.h5', model_path)
-download_blob(bucket_name, 'features_data.h5', features_path)
-print("Model and features files downloaded.")
+try:
+    print("Downloading model and features files...")
+    download_blob(bucket_name, 'resnet2_model.h5', model_path)
+    download_blob(bucket_name, 'features_data.h5', features_path)
+    print("Model and features files downloaded.")
+except Exception as e:
+    print(f"Error downloading files: {e}")
 
 # Load the HDF5 model
-print("Loading model...")
-loaded_model = load_model(model_path)
-print("Model loaded.")
+try:
+    print("Loading model...")
+    loaded_model = load_model(model_path)
+    print("Model loaded.")
+except Exception as e:
+    print(f"Error loading model: {e}")
 
 # Use the loaded model to create a feature extractor
-feature_model = Model(inputs=loaded_model.input, outputs=loaded_model.layers[-2].output)
-print("Feature extractor created.")
+try:
+    feature_model = Model(inputs=loaded_model.input, outputs=loaded_model.layers[-2].output)
+    print("Feature extractor created.")
+except Exception as e:
+    print(f"Error creating feature extractor: {e}")
 
 # Load the precomputed features and filenames from the HDF5 file
 def load_features_and_labels(hdf5_file):
-    with h5py.File(hdf5_file, 'r') as f:
-        features = np.array(f['features'])
-        filenames = [name.decode('utf-8') for name in np.array(f['filenames'])]
-        labels = [label.decode('utf-8') for label in np.array(f['labels'])]  # assuming labels need decoding as well
-    return features, filenames, labels
+    try:
+        with h5py.File(hdf5_file, 'r') as f:
+            features = np.array(f['features'])
+            filenames = [name.decode('utf-8') for name in np.array(f['filenames'])]
+
+            # Check if 'labels' exists in the file
+            if 'labels' in f:
+                labels = [label.decode('utf-8') for label in np.array(f['labels'])]
+            else:
+                labels = ['Unknown'] * len(filenames)  # or handle appropriately
+
+            print(f"Loaded features and labels from {hdf5_file}.")
+            return features, filenames, labels
+    except Exception as e:
+        print(f"Error loading features and labels from {hdf5_file}: {e}")
+        return None, None, None
 
 features, filenames, labels = load_features_and_labels(features_path)
-print("Features and filenames loaded.")
 
 # Ensure the upload directory exists
 upload_dir = '/tmp/uploads'
