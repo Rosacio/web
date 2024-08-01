@@ -15,10 +15,32 @@
             background-color: #f0f8ff;
             padding: 3rem;
         }
+        /* Button Enhancement Styles */
+        .btn-custom {
+            background-color: #17a2b8; /* Light blue similar to btn-info */
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 18px;
+            border-radius: 30px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-custom:hover, .btn-custom:focus {
+            background-color: #138496; /* Slightly darker shade for hover */
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-custom:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
 
         .new-feature-card i {
             font-size: 3rem;
-            color: #007bff;
+            color: #17a2b8; /* Use the same color as btn-info */
         }
 
         /* Hero Section Styles */
@@ -74,36 +96,43 @@
         <div class="container border-bottom border-dark">
             <h1 class="display-4">Welcome to FashionAI Shop</h1>
             <p class="lead">Your style, our passion. Discover the latest trends in fashion.</p>
-            <a href="/shop" class="btn btn-primary btn-lg btn-info">Shop Now</a>
+            <a href="/shop" class="btn btn-primary btn-lg btn-custom">Shop Now</a>
         </div>
     </header>
 
     <!-- New Section for Image Upload -->
-    <section class="container my-5">
-        <h2 class="text-center mb-4">Find Your Fashion Match</h2>
-        <div class="row justify-content-center">
-            <div class="col-lg-6 text-center">
-                <div class="new-feature-card">
-                    <i class="fas fa-camera mb-3"></i>
-                    <h2>Upload Your Image</h2>
-                    <p class="lead">Find similar items in our collection</p>
-                    <input type="file" id="imageUpload" accept="image/*" class="form-control mb-3">
-                    <button class="btn btn-primary btn-lg" onclick="uploadImage()">Upload</button>
-                    <div id="result" class="mt-4"></div>
-                    <div id="loadingSpinner" style="display: none;">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="sr-only">Loading...</span>
+    <!-- New Section for Image Upload with full-width light background -->
+    <div class="bg-light py-5"> <!-- Added padding for some spacing -->
+        <section class="container my-5">
+            <h2 class="text-center mb-4">Find Your Fashion Match</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-6 text-center">
+                    <div class="new-feature-card">
+                        <i class="fas fa-camera mb-3"></i>
+                        <h2>Upload Your Image</h2>
+                        <p class="lead">Find similar items in our collection</p>
+                        <input type="file" id="imageUpload" accept="image/*" class="form-control mb-3">
+                        <button class="btn btn-lg btn-custom" onclick="uploadImage()">Upload</button>
+                        <div id="result" class="mt-4"></div>
+                        <div id="loadingSpinner" style="display: none;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                            <p class="mt-2">Uploading image...</p>
                         </div>
-                        <p class="mt-2">Uploading image...</p>
+                        <h2>Predicted Category: <span id="predicted-category"></span></h2>
+                        <h2>Similar Images:</h2>
+                        <div id="similar-images" class="image-gallery"></div>
                     </div>
-                    <h2>Predicted Category: <span id="predicted-category"></span></h2>
-                    <h2>Similar Images:</h2>
-                    <div id="similar-images" class="image-gallery"></div>
                 </div>
             </div>
+        </section>
+    </div>
+    <section>
+        <div class="text-center my-4">
+            <a href="/development" class="btn btn-custom">Learn About Our Development Process</a>
         </div>
-    </section>
-
+    </section>    
     <!-- Features Section -->
     <section class="container my-5">
         <h2 class="text-center mb-4">Why Shop With Us?</h2>
