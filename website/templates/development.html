@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - FashionAi Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Prism.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.css">
+    <style>
+        .new-feature-card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background-color: #f0f8ff;
+            padding: 3rem;
+        }
+
+        .new-feature-card i {
+            font-size: 3rem;
+            color: #007bff;
+        }
+        /* Button Enhancement Styles */
+        .btn-custom {
+            background-color: #17a2b8; /* Light blue similar to btn-info */
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 18px;
+            border-radius: 30px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-custom:hover, .btn-custom:focus {
+            background-color: #138496; /* Slightly darker shade for hover */
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-custom:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .new-feature-card i {
+            font-size: 3rem;
+            color: #17a2b8; /* Use the same color as btn-info */
+        }
+
+        /* Hero Section Styles */
+        .hero-image {
+            background-image: url("{{ url_for('static', filename='background1.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 13rem 0; /* Increase padding for a larger vertical section */
+            text-align: center;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Navbar styles */
+        .navbar-custom {
+            background-color: #6b6b6b; /* Dark gray background */
+        }
+
+        .navbar-custom .nav-link, .navbar-custom .navbar-brand {
+            color: #2c2c2c; /* Consistent dark gray text color for links and brand */
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: #1a1a1a; /* Slightly darker gray on hover */
+        }
+
+        /* Carousel styles */
+        #clothingCarousel {
+            max-width: 70%; /* Limit the width to 80% of its parent */
+            margin: auto; /* Center the carousel */
+        }
+        .carousel-inner img {
+            height: auto; /* Maintain aspect ratio */
+            max-height: 300px; /* Maximum height */
+        }
+
+
+        .carousel-caption {
+            background-color: #1a1a1ab4; /* Semi-transparent background */
+            color: white;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-python.min.js"></script>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom border-bottom border-dark">
+        <a class="navbar-brand" href="/">FashionAI Shop</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/about">About Us</a></li>
+                <li class="nav-item"><a class="nav-link" href="/shop">Shop</a></li>
+                <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Introduction Section -->
+    <div class="bg-light p-5">
+        <section class="container my-5">
+            <h2 class="text-center mb-4">Introduction to Our Data Project</h2>
+            <p>In this project, we aim to build and test a Convolutional Neural Network (CNN) model using a dataset of 10,000 images. These images were retrieved from various free online resources, such as Kaggle, and have been categorized into 32 classes of clothing items. The goal is to accurately classify each image into one of these classes, leveraging the power of deep learning.</p>
+            <p>We will detail the steps involved in data collection, data augmentation techniques used to enhance the dataset, and the architecture of our neural network model. This process will help in understanding how we achieve high accuracy and performance in fashion classification tasks.</p>   
+        </section>
+    </div>
+
+    <section class="container my-5">
+        <h2 class="text-center mb-4">Classes showcase</h2>
+        <div id="clothingCarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-md-6">
+                            <img src="{{ url_for('static', filename='shoes.jpg') }}" class="d-block img-fluid" alt="Shoes Collection">
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <h3>Shoes Collection</h3>
+                                <p>Explore our latest collection of stylish shoes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-md-6">
+                            <img src="{{ url_for('static', filename='polo.jpg') }}" class="d-block img-fluid" alt="Polo Shirts">
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <h3>Polo Shirts</h3>
+                                <p>Comfortable and classic polo shirts available now.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-md-6">
+                            <img src="{{ url_for('static', filename='watch.jpg') }}" class="d-block img-fluid" alt="Watches">
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <h3>Watches</h3>
+                                <p>Elegant and reliable watches to enhance your style.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-md-6">
+                            <img src="{{ url_for('static', filename='jeans_men.jpg') }}" class="d-block img-fluid" alt="Men's Jeans">
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <h3>Men's Jeans</h3>
+                                <p>Durable and stylish jeans tailored for comfort.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-md-6">
+                            <img src="{{ url_for('static', filename='glasses.jpg') }}" class="d-block img-fluid" alt="Glasses">
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <h3>Glasses</h3>
+                                <p>Stylish eyewear from the best designers.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-md-6">
+                            <img src="{{ url_for('static', filename='long_dress.jpg') }}" class="d-block img-fluid" alt="Long Dresses">
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <h3>Long Dresses</h3>
+                                <p>Graceful long dresses perfect for any occasion.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-md-6">
+                            <img src="{{ url_for('static', filename='sports_jacket.jpg') }}" class="d-block img-fluid" alt="Sports Jackets">
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <h3>Sports Jackets</h3>
+                                <p>High-quality jackets for your active lifestyle.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-md-6">
+                            <img src="{{ url_for('static', filename='bags.jpg') }}" class="d-block img-fluid" alt="Bags">
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <h3>Bags</h3>
+                                <p>Explore our collection of stylish and durable bags.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-md-6">
+                            <img src="{{ url_for('static', filename='tank-top.jpg') }}" class="d-block img-fluid" alt="Tank Tops">
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <h3>Tank Tops</h3>
+                                <p>Comfortable and breathable tops for your daily workout.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-md-6">
+                            <img src="{{ url_for('static', filename='tshirt-women.jpg') }}" class="d-block img-fluid" alt="Women's T-Shirts">
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <h3>Women's T-Shirts</h3>
+                                <p>Casual and comfy t-shirts designed for everyday wear.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+            <a class="carousel-control-prev" href="#clothingCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#clothingCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </section>
+    
+    <div class="bg-light p-5">
+        <section class="container my-5">
+            <h2 class="text-center mb-4">Benefits and Purpose of Data Augmentation</h2>
+            <p>Data augmentation is a technique used to increase the diversity of your training dataset without actually collecting new data. This is achieved by applying random transformations to the existing data, such as rotations, flips, zooms, and more. Here are some benefits and purposes of using data augmentation:</p>
+            <ul>
+                <li><strong>Increases Data Diversity:</strong> Augmented data helps to introduce variations that can improve the robustness of the model.</li>
+                <li><strong>Reduces Overfitting:</strong> By providing more varied data, it helps the model to generalize better to new, unseen data.</li>
+                <li><strong>Improves Model Performance:</strong> More data and more diversity often lead to better performance and accuracy of the model.</li>
+                <li><strong>Cost-Effective:</strong> It is a cost-effective way to create large datasets without the need for additional data collection.</li>
+            </ul>
+        </section>
+    </div>
+    
+    
+    <section class="container my-5">
+        <h2 class="text-center mb-4">Data Augmentation Examples</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-4 text-center">
+                <h3>Original Image</h3>
+                <img src="{{ url_for('static', filename='tennis.jpg') }}" alt="Original" class="img-fluid">
+            </div>
+            <div class="col-md-8 text-center">
+                <h3>Transformed Images</h3>
+                <div class="row">
+                    <div class="col-6 col-lg-3 mb-4">
+                        <img src="{{ url_for('static', filename='augmented_image_1.jpg') }}" alt="Transformed 1" class="img-fluid">
+                    </div>
+                    <div class="col-6 col-lg-3 mb-4">
+                        <img src="{{ url_for('static', filename='augmented_image_2.jpg') }}" alt="Transformed 2" class="img-fluid">
+                    </div>
+                    <div class="col-6 col-lg-3 mb-4">
+                        <img src="{{ url_for('static', filename='augmented_image_3.jpg') }}" alt="Transformed 3" class="img-fluid">
+                    </div>
+                    <div class="col-6 col-lg-3 mb-4">
+                        <img src="{{ url_for('static', filename='augmented_image_4.jpg') }}" alt="Transformed 4" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="bg-light p-5">
+        <section class="container my-5">
+            <h2 class="text-center mb-4">Transforming Data for Model Training</h2>
+            <p>Before training our Convolutional Neural Network (CNN), it's essential to preprocess the data to ensure it is in the right format and enhanced for better learning. We utilize the ImageDataGenerator class from Keras to perform various transformations, such as resizing, normalizing, and augmenting the images. This process helps in improving the model's generalization ability and robustness.</p>
+            <pre>
+                <code class="language-python">
+    train_generator = train_datagen.flow_from_directory(
+        'Dataset/', # Path to the dataset directory
+        target_size=(150, 150), # Resize images to 150x150 pixels
+        batch_size=32, # Number of images processed per batch
+        class_mode='categorical', # Classification mode
+        subset='training' # Use this subset for training
+    )
+    
+    validation_generator = validation_datagen.flow_from_directory(
+        'Dataset/',
+        target_size=(150, 150),
+        batch_size=32,
+        class_mode='categorical',
+        subset='validation' # Use this subset for validation
+    )
+                </code>
+            </pre>
+            <p>In this configuration, the data generators are set up to load images from the 'Dataset/' directory, resize them to 150x150 pixels, and process them in batches of 32. The class_mode is set to 'categorical' because we are performing a multi-class classification task. The data is split into training and validation subsets to evaluate the model's performance on unseen data.</p>
+        </section>
+    </div>
+    
+    
+    <section class="container my-5">
+            <h2 class="text-center mb-4">Convolutional Neural Network Model Architecture</h2>
+            <p>Our customized Convolutional Neural Network (CNN) model is designed to classify fashion images into 32 distinct categories. The model consists of multiple convolutional layers, pooling layers, and fully connected layers. Here's an overview of the model architecture:</p>
+            <pre>
+                <code class="language-python">
+    # Customized Model
+    # Define the model
+    model = Sequential([
+        # Convolutional Block 1
+        Conv2D(32, (3, 3), activation='relu', input_shape=(150, 150, 3)),
+        MaxPooling2D((2, 2)),
+        BatchNormalization(),
+    
+        # Convolutional Block 2
+        Conv2D(64, (3, 3), activation='relu'),
+        MaxPooling2D((2, 2)),
+        BatchNormalization(),
+    
+        # Convolutional Block 3
+        Conv2D(128, (3, 3), activation='relu'),
+        MaxPooling2D((2, 2)),
+        BatchNormalization(),
+    
+        # Convolutional Block 4
+        Conv2D(256, (3, 3), activation='relu'),
+        MaxPooling2D((2, 2)),
+        BatchNormalization(),
+    
+        # Global Average Pooling
+        GlobalAveragePooling2D(),
+    
+        # Fully Connected Layers
+        Dense(512, activation='relu', kernel_regularizer=l2(0.01)),
+        Dropout(0.5),
+        BatchNormalization(),
+    
+        Dense(128, activation='relu', kernel_regularizer=l2(0.01)),
+        Dropout(0.5),
+        BatchNormalization(),
+    
+        # Output Layer
+        Dense(32, activation='softmax')  # 32 output classes with softmax activation
+    ])
+    
+    # Compile the model
+    model.compile(
+        optimizer='adam',  # Adam optimizer
+        loss='categorical_crossentropy',  # Categorical crossentropy loss function
+        metrics=['accuracy', Precision(name='precision'), Recall(name='recall')]  # Performance metrics
+    )
+    
+    # Train the model using a data generator
+    history = model.fit(
+        train_generator,
+        steps_per_epoch=train_generator.samples // train_generator.batch_size,
+        validation_data=validation_generator,
+        validation_steps=validation_generator.samples // validation_generator.batch_size,
+        epochs=10
+    )
+                </code>
+            </pre>
+            <p>The model is built using the Keras Sequential API. It starts with four convolutional blocks, each consisting of a Conv2D layer, a MaxPooling2D layer, and a BatchNormalization layer. This is followed by a GlobalAveragePooling2D layer to reduce the spatial dimensions. Finally, the model includes two fully connected layers with dropout and batch normalization for regularization, and a softmax output layer for classification.</p>
+            <p>The model is compiled with the Adam optimizer and categorical crossentropy loss function. We also monitor accuracy, precision, and recall metrics during training. The model is trained using the data generators defined earlier, with a specified number of epochs.</p>
+    </section>    
+        
+    <div class="bg-light p-5">
+        <section class="container my-5">
+            <h2 class="text-center mb-4">Importance of Model Performance Analysis</h2>
+            <p>Model performance analysis is a crucial step in fine-tuning and optimizing machine learning models. By evaluating key metrics such as accuracy, loss, precision, recall, and F1-score over multiple epochs, we can identify patterns and make informed decisions about adjustments needed to improve the model's performance. This process helps in ensuring that the model generalizes well to unseen data and avoids issues like overfitting or underfitting.</p>
+            <p>Through continuous monitoring and evaluation, we can iteratively enhance the model's capability to classify images accurately, leading to more reliable and effective applications in real-world scenarios.</p>
+        </section>
+    </div>
+
+
+    <section class="container my-5">
+        <h2 class="text-center mb-4">Model Performance Analysis</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Accuracy Per Epoch</h3>
+                <img src="{{ url_for('static', filename='simple_accuracy_per_epoch.png') }}" alt="Accuracy Per Epoch" class="img-fluid">
+            </div>
+            <div class="col-md-6">
+                <h3>Loss Per Epoch</h3>
+                <img src="{{ url_for('static', filename='simple_loss_per_epoch.png') }}" alt="Loss Per Epoch" class="img-fluid">
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <h3>Precision Per Epoch</h3>
+                <img src="{{ url_for('static', filename='simple_precision_per_epoch.png') }}" alt="Precision Per Epoch" class="img-fluid">
+            </div>
+            <div class="col-md-4">
+                <h3>Recall Per Epoch</h3>
+                <img src="{{ url_for('static', filename='simple_recall_per_epoch.png') }}" alt="Recall Per Epoch" class="img-fluid">
+            </div>
+            <div class="col-md-4">
+                <h3>F1-score Per Epoch</h3>
+                <img src="{{ url_for('static', filename='simple_f1score_per_epoch.png') }}" alt="F1-score Per Epoch" class="img-fluid">
+            </div>
+        </div>
+    </section>    
+    
+
+
+    <!-- New Feature Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <div class="new-feature-card">
+                        <i class="fas fa-lightbulb mb-3"></i>
+                        <h2>Try Our Latest Feature!</h2>
+                        <p class="lead">Experience fashion innovation with our new feature, powered by AI technology.</p>
+                        <a href="/" class="btn btn-custom btn-lg">Try Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="container my-5">
+        <h2 class="text-center mb-4">Why Shop With Us?</h2>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <h3>High Quality</h3>
+                <p>Our clothing is crafted with precision and care, using only the finest materials.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <h3>Affordable Prices</h3>
+                <p>Trendy and stylish fashion that doesn't break the bank.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <h3>Fast Shipping</h3>
+                <p>Get your order delivered quickly and reliably, no matter where you are.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-light text-center py-3">
+        <p>© 2024 FashionAi Shop. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
